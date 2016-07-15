@@ -5,21 +5,18 @@
  */
 package com.discord.discordbot;
 
+import com.discord.discordbot.eventhandlers.YouTube;
+import com.discord.discordbot.archive.InputOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 import sx.blah.discord.api.*;
-import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.util.DiscordException;
-import sx.blah.discord.util.MessageBuilder;
-import sx.blah.discord.util.RateLimitException;
-
+import com.discord.discordbot.eventhandlers.*;
 /**
  * Basic bot to test out some things in the api
  * @author Alex
  */
 public class TestBot {
-    static IDiscordClient client;
+    public static IDiscordClient client;
     
     public TestBot(){
         
@@ -30,8 +27,14 @@ public class TestBot {
             ArrayList<String>loginToken = (ArrayList<String>) InputOutput.ReadFile("C:\\Users\\Alex\\Desktop\\discord bot log.txt");
 
             client = new ClientBuilder().withToken(loginToken.get(0)).login();
-            client.getDispatcher().registerListener(new ReadyListener());
-            client.getDispatcher().registerListener(new AnnotationListener());
+            client.getDispatcher().registerListener(new OnReady());
+            client.getDispatcher().registerListener(new OnHelp());
+            client.getDispatcher().registerListener(new OnBotNick());
+            client.getDispatcher().registerListener(new DiscordRadio());
+            client.getDispatcher().registerListener(new OnHello());
+            client.getDispatcher().registerListener(new OnMeme());
+            //client.getDispatcher().registerListener(new AnnotationListener());
+            client.getDispatcher().registerListener(new YouTube());
         }catch(Exception e){
             System.err.println(e);
         }

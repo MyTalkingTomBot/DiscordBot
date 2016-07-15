@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.discord.discordbot;
+package com.discord.discordbot.archive;
 
+import com.discord.discordbot.TestBot;
 import java.io.IOException;
 import java.util.*;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -17,6 +20,7 @@ import sx.blah.discord.util.RateLimitException;
 
 /**
  * Main events class for the TestBot
+ *
  * @author Alex
  */
 public class AnnotationListener {
@@ -30,7 +34,8 @@ public class AnnotationListener {
 
     /**
      * Once the bot logs in this will occur
-     * @param event 
+     *
+     * @param event
      */
     @EventSubscriber
     public void onReady(ReadyEvent event) {
@@ -48,7 +53,8 @@ public class AnnotationListener {
 
     /**
      * if !hello is typed this will occur
-     * @param event 
+     *
+     * @param event
      */
     @EventSubscriber
     public void onHello(MessageReceivedEvent event) {
@@ -66,8 +72,10 @@ public class AnnotationListener {
     }
 
     /**
-     * if the user types !botnick: followed by a string it will change the bots name
-     * @param event 
+     * if the user types !botnick: followed by a string it will change the bots
+     * name
+     *
+     * @param event
      */
     @EventSubscriber
     public void onBotNick(MessageReceivedEvent event) {
@@ -85,12 +93,12 @@ public class AnnotationListener {
     }
 
     /**
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @EventSubscriber
     public void onMemesAdd(MessageReceivedEvent event) {
-        if (event.getMessage().getContent().toLowerCase().startsWith("!meme:")) {
+        if (event.getMessage().getContent().toLowerCase().startsWith("!meme ")) {
             messageCmd = (event.getMessage().getContent().substring(6));
             messageCmd = messageCmd.trim();
             memes.add(messageCmd);
@@ -119,6 +127,22 @@ public class AnnotationListener {
                 new MessageBuilder(TestBot.client).withChannel(event.getMessage()
                         .getChannel()).withContent(memes.get(ranN)).build();
             } catch (RateLimitException | DiscordException | MissingPermissionsException e) {
+                e.getStackTrace();
+            }
+        }
+    }
+
+    @EventSubscriber
+    public void onJukeBox(MessageReceivedEvent event) {
+        if (event.getMessage().getContent().toLowerCase().startsWith("!jukebox")) {
+            IGuild guild = TestBot.client.getGuilds().get(0);
+            IVoiceChannel voiceChannel = guild.getVoiceChannels().get(0);
+            System.out.println(voiceChannel.getID());
+
+            try {
+                voiceChannel.join();
+
+            } catch (Exception e) {
                 e.getStackTrace();
             }
         }
@@ -160,4 +184,5 @@ public class AnnotationListener {
         memeNewAdd = 0;
         System.out.println("New memes added to the file");
     }
+
 }

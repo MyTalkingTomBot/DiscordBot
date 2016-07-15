@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.discord.discordbot;
+package com.discord.discordbot.archive;
 
 import java.io.*;
 import java.util.*;
