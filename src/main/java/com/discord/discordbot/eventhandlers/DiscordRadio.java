@@ -33,6 +33,7 @@ import sx.blah.discord.util.RequestBuffer;
  * 
  * This is an eventlistener class for Discord4J that will add the bot to the first channel
  * and then allow users to add their own music via youtube.
+ * still working on class not fully working and aiming to add extra function
  *
  * @author Alex
  */

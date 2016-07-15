@@ -30,11 +30,12 @@ public class TestBot {
             client.getDispatcher().registerListener(new OnReady());
             client.getDispatcher().registerListener(new OnHelp());
             client.getDispatcher().registerListener(new OnBotNick());
-            client.getDispatcher().registerListener(new DiscordRadio());
+            //client.getDispatcher().registerListener(new DiscordRadio());
             client.getDispatcher().registerListener(new OnHello());
             client.getDispatcher().registerListener(new OnMeme());
             //client.getDispatcher().registerListener(new AnnotationListener());
             client.getDispatcher().registerListener(new YouTube());
+            client.getDispatcher().registerListener(new DiscordAgainstHumanity());
         }catch(Exception e){
             System.err.println(e);
         }

@@ -16,12 +16,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
+import sx.blah.discord.util.RequestBuffer;
 
 /**
  * contains a lot of useful methods for the event classes
@@ -29,8 +32,8 @@ import sx.blah.discord.util.RateLimitException;
  * @author Alex
  */
 public abstract class Utility {
-    
 
+    private static final Logger log = LoggerFactory.getLogger(Utility.class);
 
     protected void printMessage(MessageReceivedEvent event, String content) {
         try {
@@ -94,5 +97,24 @@ public abstract class Utility {
                 out.close();
             }
         }
+    }
+
+    public static CompletableFuture<Void> processCommand(Runnable runnable) {
+        return CompletableFuture.runAsync(runnable)
+                .exceptionally(t -> {
+                    log.warn("Could not complete command", t);
+                    return null;
+                });
+    }
+
+    public static void deleteMessage(IMessage message) {
+        RequestBuffer.request(() -> {
+            try {
+                message.delete();
+            } catch (MissingPermissionsException | DiscordException e) {
+                log.warn("Failed to delete message", e);
+            }
+            return null;
+        });
     }
 }

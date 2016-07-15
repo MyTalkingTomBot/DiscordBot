@@ -3,6 +3,7 @@
  */
 package com.discord.discordbot.eventhandlers;
 
+import com.discord.discordbot.TestBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -28,16 +29,31 @@ import java.nio.charset.Charset;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IGuild;
 
 public class YouTube {
 
     private static final Logger log = LoggerFactory.getLogger(YouTube.class);
+    
+    @EventSubscriber
+    public void onReady(ReadyEvent event) {
+        IGuild guild = TestBot.client.getGuilds().get(0);
+        IVoiceChannel voiceChannel = guild.getVoiceChannels().get(0);
+        System.out.println(voiceChannel.getID());
+
+        try {
+            voiceChannel.join();
+
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+    }
 
     @EventSubscriber
     public void onMessage(MessageReceivedEvent e) {
         IMessage message = e.getMessage();
-        String content = message.getContent();
+        String content = message.getContent().toLowerCase();
         if (content.startsWith("!q ") || content.startsWith("!queue ")) {
             processCommand(() -> queueCommand(e));
         } else if (content.equals("!s") || content.equals("!skip")) {
