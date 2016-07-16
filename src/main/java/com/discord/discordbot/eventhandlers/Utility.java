@@ -16,10 +16,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IPrivateChannel;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MessageBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
@@ -34,15 +39,7 @@ import sx.blah.discord.util.RequestBuffer;
 public abstract class Utility {
 
     private static final Logger log = LoggerFactory.getLogger(Utility.class);
-
-    protected void printMessage(MessageReceivedEvent event, String content) {
-        try {
-            new MessageBuilder(TestBot.client).withChannel(event.getMessage()
-                    .getChannel()).withContent(content).build();
-        } catch (RateLimitException | DiscordException | MissingPermissionsException e) {
-            e.getStackTrace();
-        }
-    }
+    private Timer timer;
 
     public static Collection ReadFile(String filename) throws IOException {
         File inFile = new File(filename);
@@ -99,14 +96,40 @@ public abstract class Utility {
         }
     }
 
-    public static CompletableFuture<Void> processCommand(Runnable runnable) {
-        return CompletableFuture.runAsync(runnable)
-                .exceptionally(t -> {
-                    log.warn("Could not complete command", t);
-                    return null;
-                });
+    protected void printMessage(MessageReceivedEvent event, String content) {
+        try {
+            new MessageBuilder(TestBot.client).withChannel(event.getMessage()
+                    .getChannel()).withContent(content).build();
+        } catch (RateLimitException | DiscordException | MissingPermissionsException e) {
+            e.getStackTrace();
+        }
     }
 
+    protected void whisperMessage(MessageReceivedEvent event, String content) {
+
+        try {
+            IPrivateChannel channel = TestBot.client.getOrCreatePMChannel(TestBot.client.getUserByID(event.getMessage().getAuthor().getID()));
+            channel.sendMessage(content);
+        } catch (DiscordException | RateLimitException | MissingPermissionsException e) {
+            e.getStackTrace();
+        }
+    }
+
+    protected void whisperMessage(String userID, String content) {
+
+        try {
+            IPrivateChannel channel = TestBot.client.getOrCreatePMChannel(TestBot.client.getUserByID(userID));
+            channel.sendMessage(content);
+        } catch (DiscordException | RateLimitException | MissingPermissionsException e) {
+            e.getStackTrace();
+        }
+    }
+
+    /**
+     * simple method to remove messages
+     *
+     * @param message
+     */
     public static void deleteMessage(IMessage message) {
         RequestBuffer.request(() -> {
             try {
@@ -116,5 +139,20 @@ public abstract class Utility {
             }
             return null;
         });
+    }
+
+    /**
+     * CompletableFuture is an Async method that will carry out the methods
+     * pushed in a logical stack to prevent errors occuring. requires J8
+     *
+     * @param runnable
+     * @return
+     */
+    public static CompletableFuture<Void> processCommand(Runnable runnable) {
+        return CompletableFuture.runAsync(runnable)
+                .exceptionally(t -> {
+                    log.warn("Could not complete command", t);
+                    return null;
+                });
     }
 }
