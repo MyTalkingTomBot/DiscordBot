@@ -41,7 +41,7 @@ public abstract class Utility {
     private static final Logger log = LoggerFactory.getLogger(Utility.class);
     private Timer timer;
 
-    public static Collection ReadFile(String filename) throws IOException {
+    public static Collection readFile(String filename) throws IOException {
         File inFile = new File(filename);
         BufferedReader bin = null;
         String fileReading = "";

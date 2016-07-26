@@ -8,13 +8,14 @@ package com.discord.discordbot.eventhandlers;
 import java.util.ArrayList;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.obj.IMessage;
 
 /**
  *
  * @author Alex
  */
-public class SaveActiveUsers extends Utility{
+public class SaveActiveUsers extends Utility implements EventHandlerInterface{
     public static ArrayList<String>userIDs = new ArrayList<>();
     
     
@@ -34,6 +35,16 @@ public class SaveActiveUsers extends Utility{
             deleteMessage(message);
             
         }
+    }
+
+    @Override
+    public void onReady(ReadyEvent event) {
+        
+    }
+
+    @Override
+    public void onMessage(MessageReceivedEvent event) {
+       
     }
     
 }

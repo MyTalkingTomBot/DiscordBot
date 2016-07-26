@@ -28,7 +28,7 @@ import com.google.common.collect.Multimap;
  *
  * @author Alex
  */
-public class DiscordAgainstHumanity extends Utility {
+public class DiscordAgainstHumanity extends Utility implements EventHandlerInterface{
 
     private static final Logger log = LoggerFactory.getLogger(DiscordAgainstHumanity.class);
 

@@ -31,7 +31,7 @@ public class OnMeme extends Utility {
     @EventSubscriber
     public void onReady(ReadyEvent event) {
         try {
-            memes = (ArrayList) Utility.ReadFile(MEME_TXT);
+            memes = (ArrayList) Utility.readFile(MEME_TXT);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

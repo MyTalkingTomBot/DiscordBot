@@ -35,6 +35,7 @@ public class TestBot {
             client.getDispatcher().registerListener(new OnMeme());
             client.getDispatcher().registerListener(new SaveActiveUsers());
             client.getDispatcher().registerListener(new YouTube());
+            client.getDispatcher().registerListener(new RanGame());
             client.getDispatcher().registerListener(new DiscordAgainstHumanity());
         }catch(Exception e){
             System.err.println(e);
