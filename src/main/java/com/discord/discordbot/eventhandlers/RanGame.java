@@ -37,7 +37,10 @@ public class RanGame extends Utility implements EventHandlerInterface{
         String content = message.toString().toLowerCase();
         if((content.equals("!g")) || (content.equals("!game"))){
             processCommand(() -> onGame(event));
-        }   
+        }
+        else if(content.startsWith("!nogame")){
+            processCommand(() -> onNoGame(event));
+        }
         
     }
     
@@ -52,6 +55,10 @@ public class RanGame extends Utility implements EventHandlerInterface{
         
         printMessage(event,"Game to play: " + game);
         TestBot.client.changeGameStatus(game);
+    }
+    
+    private void onNoGame(MessageReceivedEvent event){
+        TestBot.client.changeGameStatus(null);
     }
     
     

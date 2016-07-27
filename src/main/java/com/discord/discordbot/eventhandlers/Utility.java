@@ -38,7 +38,7 @@ import sx.blah.discord.util.RequestBuffer;
  */
 public abstract class Utility {
 
-    private static final Logger log = LoggerFactory.getLogger(Utility.class);
+   // private static final Logger log = LoggerFactory.getLogger(Utility.class);
     private Timer timer;
 
     public static Collection readFile(String filename) throws IOException {
@@ -135,7 +135,7 @@ public abstract class Utility {
             try {
                 message.delete();
             } catch (MissingPermissionsException | DiscordException e) {
-                log.warn("Failed to delete message", e);
+                //log.warn("Failed to delete message", e);
             }
             return null;
         });
@@ -151,7 +151,7 @@ public abstract class Utility {
     public static CompletableFuture<Void> processCommand(Runnable runnable) {
         return CompletableFuture.runAsync(runnable)
                 .exceptionally(t -> {
-                    log.warn("Could not complete command", t);
+                    //log.warn("Could not complete command", t);
                     return null;
                 });
     }

@@ -11,20 +11,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import sx.blah.discord.api.*;
 import com.discord.discordbot.eventhandlers.*;
+
 /**
  * Basic bot to test out some things in the api
+ *
  * @author Alex
  */
 public class TestBot {
+
     public static IDiscordClient client;
-    
-    public TestBot(){
-        
+
+    public TestBot() {
+
     }
-    
-    public static void main(String[]args){
-        try{
-            ArrayList<String>loginToken = (ArrayList<String>) InputOutput.ReadFile("C:\\Users\\Alex\\Desktop\\discord bot log.txt");
+
+    public static void main(String[] args) {
+        try {
+            ArrayList<String> loginToken = (ArrayList<String>) InputOutput.ReadFile("C:\\Users\\Alex\\Desktop\\discord bot log.txt");
 
             client = new ClientBuilder().withToken(loginToken.get(0)).login();
             client.getDispatcher().registerListener(new OnReady());
@@ -36,14 +39,11 @@ public class TestBot {
             client.getDispatcher().registerListener(new SaveActiveUsers());
             client.getDispatcher().registerListener(new YouTube());
             client.getDispatcher().registerListener(new RanGame());
+           // client.getDispatcher().registerListener(new TweetMe());
             client.getDispatcher().registerListener(new DiscordAgainstHumanity());
-        }catch(Exception e){
+        } catch (Exception e) {
             System.err.println(e);
         }
- 
 
     }
 }
-    
-    
-

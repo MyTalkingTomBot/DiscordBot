@@ -28,7 +28,7 @@ import sx.blah.discord.util.MessageBuilder;
  *
  * @author Alex
  */
-public class DiscordAgainstHumanity extends Utility implements EventHandlerInterface{
+public class DiscordAgainstHumanity extends Utility implements EventHandlerInterface {
 
     private static final Logger log = LoggerFactory.getLogger(DiscordAgainstHumanity.class);
     //cards to load into the game
@@ -42,8 +42,15 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
     private static Map<String, String[]> usersCards = new HashMap<>();
 
     //round vars
+    
+    //arraylist of that rounds selected cards mapped to the players
     private static Map<String, String> selectedRoundCards = new HashMap<>();
-    private String usersPlaying = "";
+    private String usersPlaying = ""; //string of all users playing \n seperator
+
+    //cardCzar
+    private ArrayList<String> userList;
+    private String currentCzar = null; //who is the current Czar
+    private ArrayList<String> previousCzar; //arraylist of all czars so far
 
     //game logic
     private static boolean gameStart = true;
@@ -217,9 +224,9 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
 
     }
     /*
-    !r || !ready will inital the game commands
-    checks the game has begun and will push the cards to the user so they get
-    their starting hand
+     !r || !ready will inital the game commands
+     checks the game has begun and will push the cards to the user so they get
+     their starting hand
      */
 
     private void onUserReady(MessageReceivedEvent event) {
@@ -296,9 +303,10 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
 
     }
     /* 
-    method used to give the user a new card
-    requires a card number to be replaced whilst it adds the card to the hand
-    */
+     method used to give the user a new card
+     requires a card number to be replaced whilst it adds the card to the hand
+     */
+
     private String newCard(int cardNo, String getUserId) {
         String[] hand = usersCards.get(getUserId);
         //random number generation
@@ -309,10 +317,11 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
         usersCards.put(getUserId, hand); //add it to the users hand
         String output = whiteCards.get(ranNo); //output the value
         whiteCards.remove(ranNo); //remove from deck
-        
+
         //returns the new card string
         return output;
     }
+
     //pulls the Array out from the map and displays the current cards
     private String getUsersHand(MessageReceivedEvent event, String getUserId) {
         String[] hand = usersCards.get(getUserId);
@@ -324,6 +333,7 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
         //outputs the cards on different lines, totalling 10
         return output;
     }
+
     //Method that generates the user hand by taking cards from the ArrayLists
     private String[] userHand() {
         String[] userHand = new String[10]; //output Array always 10 cards
@@ -331,9 +341,9 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
         Random rand = new Random(); //random number
 
         /*
-        main iteration loop that will pull random cards and add them to the array
-        before removed them from the deck, output an Array
-        */
+         main iteration loop that will pull random cards and add them to the array
+         before removed them from the deck, output an Array
+         */
         for (int i = 0; i < userHand.length; i++) {
             int ranNo = rand.nextInt(whiteCards.size());
             userHand[i] = whiteCards.get(ranNo);
@@ -342,17 +352,53 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
 
         return userHand; //String[]Array
     }
-    
-    /*
-    Method that will random select a CardCzar, providing not Czar last turn
-    maybe will be best to just get all users put them in an order and keep refreshing the order
-    
-    */
-    private String CardCzar() {
-        String output = "";
 
-        return output;
+    /*
+     Method that will random select a CardCzar, providing not Czar last turn
+     maybe will be best to just get all users put them in an order and keep refreshing the order
+    
+     */
+    private String CardCzar() {
+        Random rand = new Random();
+        String[] userArray = usersPlaying.split("\n");
+        int ranNo = rand.nextInt(userArray.length);
+
+        if (currentCzar == null) {
+            //creates a String[] to be copied to the arraylist
+            userList.addAll(Arrays.asList(userArray));
+
+            currentCzar = userList.get(ranNo);
+            //checks to see if the czar has been initiate if it has will clear the list
+            if (previousCzar != null) {
+                previousCzar.clear();
+            }
+            previousCzar = new ArrayList<>(); //sets up the arrayList
+            previousCzar.add(currentCzar); //adds to the previous list
+        }
+
+        //checks to see if the previous list contains the next user
+        if (previousCzar.contains(userList.get(ranNo))) {
+            //loops until unique name is drawn
+            while(previousCzar.contains(userList.get(ranNo))) {
+                ranNo = rand.nextInt(userArray.length);
+            }
+            //add the new user to the list
+            currentCzar = userList.get(ranNo);
+            previousCzar.add(currentCzar);
+        }
+        else{
+            //add the new user to the list
+            currentCzar = userList.get(ranNo);
+            previousCzar.add(currentCzar);
+        }
+
+        return currentCzar;
     }
+    
+    private void CzarCards(){
+        
+    }
+
     //timer class that doesn't work currently
     class TaskOver extends TimerTask {
 
@@ -362,6 +408,7 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
             timer.cancel(); // Terminate the timer thread
         }
     }
+
     //String output of all users playing, username are seperated by \n
     public void setUsersPlaying(MessageReceivedEvent event) {
         String user = event.getMessage().getAuthor().getName();
