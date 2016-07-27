@@ -51,6 +51,12 @@ public class DiscordAgainstHumanity extends Utility implements EventHandlerInter
     private ArrayList<String> userList;
     private String currentCzar = null; //who is the current Czar
     private ArrayList<String> previousCzar; //arraylist of all czars so far
+    private String usersPlaying = "";
+
+    //cardCzar
+    private ArrayList<String> userList;
+    private String currentCzar = null;
+    private ArrayList<String> previousCzar;
 
     //game logic
     private static boolean gameStart = true;
